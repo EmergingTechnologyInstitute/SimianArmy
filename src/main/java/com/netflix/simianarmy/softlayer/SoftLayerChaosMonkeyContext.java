@@ -17,9 +17,7 @@
  */
 package com.netflix.simianarmy.softlayer;
 
-import com.amazonaws.services.simpleemail.AmazonSimpleEmailServiceClient;
 import com.netflix.simianarmy.MonkeyConfiguration;
-import com.netflix.simianarmy.basic.chaos.BasicChaosEmailNotifier;
 import com.netflix.simianarmy.basic.chaos.BasicChaosInstanceSelector;
 import com.netflix.simianarmy.chaos.ChaosCrawler;
 import com.netflix.simianarmy.chaos.ChaosEmailNotifier;
