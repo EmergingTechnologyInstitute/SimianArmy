@@ -15,7 +15,7 @@
  *     limitations under the License.
  *
  */
-package com.netflix.simianarmy.basic.chaos;
+package com.netflix.simianarmy.client.softlayer.chaos;
 
 import java.util.Arrays;
 import java.util.List;
@@ -29,14 +29,15 @@ import com.netflix.simianarmy.MonkeyConfiguration;
 import com.netflix.simianarmy.aws.AWSEmailNotifier;
 import com.netflix.simianarmy.chaos.ChaosCrawler.InstanceGroup;
 import com.netflix.simianarmy.chaos.ChaosEmailNotifier;
+import com.netflix.simianarmy.client.softlayer.SendGridEmailNotifier;
 
 /** The basic implementation of the email notifier for Chaos monkey.
  *
  */
-public class BasicChaosEmailNotifier extends AWSEmailNotifier implements ChaosEmailNotifier{
+public class SoftLayerChaosEmailNotifier extends SendGridEmailNotifier implements ChaosEmailNotifier{
 
     /** The Constant LOGGER. */
-    private static final Logger LOGGER = LoggerFactory.getLogger(BasicChaosEmailNotifier.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(SoftLayerChaosEmailNotifier.class);
 
     private final MonkeyConfiguration cfg;
     private final String defaultEmail;
@@ -50,9 +51,8 @@ public class BasicChaosEmailNotifier extends AWSEmailNotifier implements ChaosEm
      * owner email specified
      * @param ccAddresses the cc email addresses for notifications
      */
-    public BasicChaosEmailNotifier(MonkeyConfiguration cfg, AmazonSimpleEmailServiceClient sesClient,
-            String defaultEmail, String... ccAddresses) {        
-    	super(sesClient);
+    public SoftLayerChaosEmailNotifier(MonkeyConfiguration cfg, String defaultEmail, String... ccAddresses) {        
+    	super(cfg);
         this.cfg = cfg;
         this.defaultEmail = defaultEmail;
         this.ccAddresses = Arrays.asList(ccAddresses);

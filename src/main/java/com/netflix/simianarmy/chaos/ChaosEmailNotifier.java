@@ -17,24 +17,13 @@
  */
 package com.netflix.simianarmy.chaos;
 
-import com.amazonaws.services.simpleemail.AmazonSimpleEmailServiceClient;
-import com.netflix.simianarmy.aws.AWSEmailNotifier;
+import com.netflix.simianarmy.MonkeyEmailNotifier;
 import com.netflix.simianarmy.chaos.ChaosCrawler.InstanceGroup;
 
 /** The email notifier for Chaos monkey.
  *
  */
-public abstract class ChaosEmailNotifier extends AWSEmailNotifier {
-
-    /** Constructor. Currently the notifier is fixed the email client to
-     * Amazon Simple Email Service. We can release this restriction when
-     * we want to support different email clients.
-     *
-     * @param sesClient the AWS simple email service client.
-     */
-    public ChaosEmailNotifier(AmazonSimpleEmailServiceClient sesClient) {
-        super(sesClient);
-    }
+public interface ChaosEmailNotifier extends MonkeyEmailNotifier {
 
     /**
      * Sends an email notification for a termination of instance to group

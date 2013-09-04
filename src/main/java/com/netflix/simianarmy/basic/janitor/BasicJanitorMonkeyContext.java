@@ -52,6 +52,7 @@ import com.netflix.simianarmy.aws.janitor.rule.snapshot.NoGeneratedAMIRule;
 import com.netflix.simianarmy.aws.janitor.rule.volume.DeleteOnTerminationRule;
 import com.netflix.simianarmy.aws.janitor.rule.volume.OldDetachedVolumeRule;
 import com.netflix.simianarmy.basic.BasicSimianArmyContext;
+import com.netflix.simianarmy.client.aws.AWSClient;
 import com.netflix.simianarmy.client.edda.EddaClient;
 import com.netflix.simianarmy.janitor.AbstractJanitor;
 import com.netflix.simianarmy.janitor.JanitorCrawler;
@@ -114,7 +115,7 @@ public class BasicJanitorMonkeyContext extends BasicSimianArmyContext implements
 
         Set<String> enabledResourceSet = getEnabledResourceSet();
 
-        janitorResourceTracker = new SimpleDBJanitorResourceTracker(awsClient(), resourceDomain);
+        janitorResourceTracker = new SimpleDBJanitorResourceTracker(cloudClient(), resourceDomain);
 
         janitorEmailBuilder = new BasicJanitorEmailBuilder();
         sesClient = new AmazonSimpleEmailServiceClient();
@@ -185,14 +186,14 @@ public class BasicJanitorMonkeyContext extends BasicSimianArmyContext implements
         }
         JanitorCrawler crawler;
         if (configuration().getBoolOrElse("simianarmy.janitor.edda.enabled", false)) {
-            crawler = new EddaASGJanitorCrawler(createEddaClient(), awsClient().region());
+            crawler = new EddaASGJanitorCrawler(createEddaClient(), cloudClient().region());
         } else {
-            crawler = new ASGJanitorCrawler(awsClient());
+            crawler = new ASGJanitorCrawler(cloudClient());
         }
         BasicJanitorContext asgJanitorCtx = new BasicJanitorContext(
                 monkeyRegion, ruleEngine, crawler, janitorResourceTracker,
                 monkeyCalendar, configuration(), recorder());
-        return new ASGJanitor(awsClient(), asgJanitorCtx);
+        return new ASGJanitor(cloudClient(), asgJanitorCtx);
     }
 
     private InstanceJanitor getInstanceJanitor() {
@@ -209,14 +210,14 @@ public class BasicJanitorMonkeyContext extends BasicSimianArmyContext implements
         }
         JanitorCrawler instanceCrawler;
         if (configuration().getBoolOrElse("simianarmy.janitor.edda.enabled", false)) {
-            instanceCrawler = new EddaInstanceJanitorCrawler(createEddaClient(), awsClient().region());
+            instanceCrawler = new EddaInstanceJanitorCrawler(createEddaClient(), cloudClient().region());
         } else {
-            instanceCrawler = new InstanceJanitorCrawler(awsClient());
+            instanceCrawler = new InstanceJanitorCrawler(cloudClient());
         }
         BasicJanitorContext instanceJanitorCtx = new BasicJanitorContext(
                 monkeyRegion, ruleEngine, instanceCrawler, janitorResourceTracker,
                 monkeyCalendar, configuration(), recorder());
-        return new InstanceJanitor(awsClient(), instanceJanitorCtx);
+        return new InstanceJanitor(cloudClient(), instanceJanitorCtx);
     }
 
     private EBSVolumeJanitor getEBSVolumeJanitor() {
@@ -236,15 +237,15 @@ public class BasicJanitorMonkeyContext extends BasicSimianArmyContext implements
         }
         JanitorCrawler volumeCrawler;
         if (configuration().getBoolOrElse("simianarmy.janitor.edda.enabled", false)) {
-            volumeCrawler = new EddaEBSVolumeJanitorCrawler(createEddaClient(), awsClient().region());
+            volumeCrawler = new EddaEBSVolumeJanitorCrawler(createEddaClient(), cloudClient().region());
         } else {
-            volumeCrawler = new EBSVolumeJanitorCrawler(awsClient());
+            volumeCrawler = new EBSVolumeJanitorCrawler(cloudClient());
         }
 
         BasicJanitorContext volumeJanitorCtx = new BasicJanitorContext(
                 monkeyRegion, ruleEngine, volumeCrawler, janitorResourceTracker,
                 monkeyCalendar, configuration(), recorder());
-        return new EBSVolumeJanitor(awsClient(), volumeJanitorCtx);
+        return new EBSVolumeJanitor(cloudClient(), volumeJanitorCtx);
     }
 
     private EBSSnapshotJanitor getEBSSnapshotJanitor() {
@@ -259,14 +260,14 @@ public class BasicJanitorMonkeyContext extends BasicSimianArmyContext implements
         if (configuration().getBoolOrElse("simianarmy.janitor.edda.enabled", false)) {
             snapshotCrawler = new EddaEBSSnapshotJanitorCrawler(
                     configuration().getStr("simianarmy.janitor.snapshots.ownerId"),
-                    createEddaClient(), awsClient().region());
+                    createEddaClient(), cloudClient().region());
         } else {
-            snapshotCrawler = new EBSSnapshotJanitorCrawler(awsClient());
+            snapshotCrawler = new EBSSnapshotJanitorCrawler(cloudClient());
         }
         BasicJanitorContext snapshotJanitorCtx = new BasicJanitorContext(
                 monkeyRegion, ruleEngine, snapshotCrawler, janitorResourceTracker,
                 monkeyCalendar, configuration(), recorder());
-        return new EBSSnapshotJanitor(awsClient(), snapshotJanitorCtx);
+        return new EBSSnapshotJanitor(cloudClient(), snapshotJanitorCtx);
     }
 
     private LaunchConfigJanitor getLaunchConfigJanitor() {
@@ -281,14 +282,14 @@ public class BasicJanitorMonkeyContext extends BasicSimianArmyContext implements
         JanitorCrawler crawler;
         if (configuration().getBoolOrElse("simianarmy.janitor.edda.enabled", false)) {
             crawler = new EddaLaunchConfigJanitorCrawler(
-                    createEddaClient(), awsClient().region());
+                    createEddaClient(), cloudClient().region());
         } else {
-            crawler = new LaunchConfigJanitorCrawler(awsClient());
+            crawler = new LaunchConfigJanitorCrawler(cloudClient());
         }
         BasicJanitorContext janitorCtx = new BasicJanitorContext(
                 monkeyRegion, ruleEngine, crawler, janitorResourceTracker,
                 monkeyCalendar, configuration(), recorder());
-        return new LaunchConfigJanitor(awsClient(), janitorCtx);
+        return new LaunchConfigJanitor(cloudClient(), janitorCtx);
     }
 
     private ImageJanitor getImageJanitor() {
@@ -299,7 +300,7 @@ public class BasicJanitorMonkeyContext extends BasicSimianArmyContext implements
             crawler = new EddaImageJanitorCrawler(createEddaClient(),
                     configuration().getStr("simianarmy.janitor.image.ownerId"),
                     (int) configuration().getNumOrElse("simianarmy.janitor.image.crawler.lookBackDays", 60),
-                    awsClient().region());
+                    cloudClient().region());
         } else {
             throw new RuntimeException("Image Janitor only works when Edda is enabled.");
         }
@@ -311,7 +312,7 @@ public class BasicJanitorMonkeyContext extends BasicSimianArmyContext implements
         BasicJanitorContext janitorCtx = new BasicJanitorContext(
                 monkeyRegion, ruleEngine, crawler, janitorResourceTracker,
                 monkeyCalendar, configuration(), recorder());
-        return new ImageJanitor(awsClient(), janitorCtx);
+        return new ImageJanitor(cloudClient(), janitorCtx);
     }
 
     private EddaClient createEddaClient() {

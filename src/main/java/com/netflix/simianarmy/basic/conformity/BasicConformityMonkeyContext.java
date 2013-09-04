@@ -52,7 +52,7 @@ import java.util.Map;
 /**
  * The basic implementation of the context class for Conformity monkey.
  */
-public class BasicConformityMonkeyContext extends BasicSimianArmyContext implements ConformityMonkey.Context {
+public class BasicConformityMonkeyContext extends BasicSimianArmyContext implements ConformityMonkey.Context<AWSClient> {
 
     /** The Constant LOGGER. */
     private static final Logger LOGGER = LoggerFactory.getLogger(BasicConformityMonkeyContext.class);
@@ -96,7 +96,7 @@ public class BasicConformityMonkeyContext extends BasicSimianArmyContext impleme
 
         String sdbDomain = configuration().getStrOrElse("simianarmy.conformity.sdb.domain", "SIMIAN_ARMY");
 
-        clusterTracker = new SimpleDBConformityClusterTracker(awsClient(), sdbDomain);
+        clusterTracker = new SimpleDBConformityClusterTracker(cloudClient(), sdbDomain);
 
         ruleEngine = new ConformityRuleEngine();
         boolean eurekaEnabled = configuration().getBoolOrElse("simianarmy.conformity.Eureka.enabled", false);

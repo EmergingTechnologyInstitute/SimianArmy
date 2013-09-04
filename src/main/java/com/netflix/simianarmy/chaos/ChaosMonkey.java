@@ -19,6 +19,7 @@ package com.netflix.simianarmy.chaos;
 
 import java.util.Date;
 
+import com.netflix.simianarmy.CloudClient;
 import com.netflix.simianarmy.FeatureNotEnabledException;
 import com.netflix.simianarmy.InstanceGroupNotFoundException;
 import com.netflix.simianarmy.Monkey;
@@ -33,7 +34,7 @@ public abstract class ChaosMonkey extends Monkey {
     /**
      * The Interface Context.
      */
-    public interface Context extends Monkey.Context {
+    public interface Context<T extends CloudClient> extends Monkey.Context<T> {
 
         /**
          * Configuration.

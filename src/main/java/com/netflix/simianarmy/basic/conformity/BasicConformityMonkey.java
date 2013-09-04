@@ -19,6 +19,7 @@ package com.netflix.simianarmy.basic.conformity;
 
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
+import com.netflix.simianarmy.CloudClient;
 import com.netflix.simianarmy.MonkeyCalendar;
 import com.netflix.simianarmy.MonkeyConfiguration;
 import com.netflix.simianarmy.conformity.Cluster;
@@ -91,7 +92,7 @@ public class BasicConformityMonkey extends ConformityMonkey {
      * @param ctx
      *            the ctx
      */
-    public BasicConformityMonkey(Context ctx) {
+    public BasicConformityMonkey(Context<? extends CloudClient> ctx) {
         super(ctx);
         cfg = ctx.configuration();
         crawler = ctx.clusterCrawler();

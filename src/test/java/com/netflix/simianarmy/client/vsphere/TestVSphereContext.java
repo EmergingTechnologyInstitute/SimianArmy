@@ -30,7 +30,7 @@ public class TestVSphereContext {
     @Test
     public void shouldSetClientOfCorrectType() {
         VSphereContext context = new VSphereContext();
-        AWSClient awsClient = context.awsClient();
+        AWSClient awsClient = context.cloudClient();
         assertNotNull(awsClient);
         assertTrue(awsClient instanceof VSphereClient);
     }

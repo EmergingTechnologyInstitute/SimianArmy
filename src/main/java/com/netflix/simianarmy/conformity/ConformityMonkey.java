@@ -17,6 +17,7 @@
  */
 package com.netflix.simianarmy.conformity;
 
+import com.netflix.simianarmy.CloudClient;
 import com.netflix.simianarmy.Monkey;
 import com.netflix.simianarmy.MonkeyConfiguration;
 
@@ -30,7 +31,7 @@ public abstract class ConformityMonkey extends Monkey {
     /**
      * The Interface Context.
      */
-    public interface Context extends Monkey.Context {
+    public interface Context<T extends CloudClient> extends Monkey.Context<T> {
 
         /**
          * Configuration.

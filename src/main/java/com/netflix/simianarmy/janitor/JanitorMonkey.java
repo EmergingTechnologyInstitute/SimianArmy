@@ -22,6 +22,7 @@ import java.util.List;
 import com.netflix.simianarmy.Monkey;
 import com.netflix.simianarmy.MonkeyConfiguration;
 import com.netflix.simianarmy.MonkeyRecorder.Event;
+import com.netflix.simianarmy.client.aws.AWSClient;
 
 /**
  * The abstract class for a Janitor Monkey.
@@ -42,7 +43,7 @@ public abstract class JanitorMonkey extends Monkey {
     /**
      * The Interface Context.
      */
-    public interface Context extends Monkey.Context {
+    public interface Context extends Monkey.Context<AWSClient> {
 
         /**
          * Configuration.

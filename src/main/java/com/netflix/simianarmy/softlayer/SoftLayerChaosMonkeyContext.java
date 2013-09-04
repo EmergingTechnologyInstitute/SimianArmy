@@ -15,10 +15,9 @@
  *     limitations under the License.
  *
  */
-package com.netflix.simianarmy.basic;
+package com.netflix.simianarmy.softlayer;
 
 import com.amazonaws.services.simpleemail.AmazonSimpleEmailServiceClient;
-import com.netflix.simianarmy.CloudClient;
 import com.netflix.simianarmy.MonkeyConfiguration;
 import com.netflix.simianarmy.basic.chaos.BasicChaosEmailNotifier;
 import com.netflix.simianarmy.basic.chaos.BasicChaosInstanceSelector;
@@ -26,15 +25,16 @@ import com.netflix.simianarmy.chaos.ChaosCrawler;
 import com.netflix.simianarmy.chaos.ChaosEmailNotifier;
 import com.netflix.simianarmy.chaos.ChaosInstanceSelector;
 import com.netflix.simianarmy.chaos.ChaosMonkey;
-import com.netflix.simianarmy.client.aws.AWSClient;
-import com.netflix.simianarmy.client.aws.chaos.ASGChaosCrawler;
+import com.netflix.simianarmy.client.softlayer.SoftLayerClient;
+import com.netflix.simianarmy.client.softlayer.chaos.SoftLayerChaosCrawler;
+import com.netflix.simianarmy.client.softlayer.chaos.SoftLayerChaosEmailNotifier;
 
 /**
  * The Class BasicContext. This provide the basic context needed for the Chaos Monkey to run. It will configure
  * the Chaos Monkey based on a simianarmy.properties file and chaos.properties. The properties file can be
  * overridden with -Dsimianarmy.properties=/path/to/my.properties
  */
-public class BasicChaosMonkeyContext extends BasicSimianArmyContext implements ChaosMonkey.Context<AWSClient> {
+public class SoftLayerChaosMonkeyContext extends SoftLayerSimianArmyContext implements ChaosMonkey.Context<SoftLayerClient> {
 
     /** The crawler. */
     private ChaosCrawler crawler;
@@ -48,12 +48,12 @@ public class BasicChaosMonkeyContext extends BasicSimianArmyContext implements C
     /**
      * Instantiates a new basic context.
      */
-    public BasicChaosMonkeyContext() {
+    public SoftLayerChaosMonkeyContext() {
         super("simianarmy.properties", "client.properties", "chaos.properties");
-        setChaosCrawler(new ASGChaosCrawler(cloudClient()));
+        setChaosCrawler(new SoftLayerChaosCrawler(cloudClient()));
         setChaosInstanceSelector(new BasicChaosInstanceSelector());
         MonkeyConfiguration cfg = configuration();
-        setChaosEmailNotifier(new BasicChaosEmailNotifier(cfg, new AmazonSimpleEmailServiceClient(), null));
+        setChaosEmailNotifier(new SoftLayerChaosEmailNotifier(cfg, null));
     }
 
     /** {@inheritDoc} */

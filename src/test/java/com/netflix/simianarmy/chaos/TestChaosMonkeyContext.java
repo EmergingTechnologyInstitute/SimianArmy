@@ -231,7 +231,7 @@ public class TestChaosMonkeyContext extends TestMonkeyContext implements ChaosMo
 
     @Override
     public ChaosEmailNotifier chaosEmailNotifier() {
-        return new ChaosEmailNotifier(null) {
+        return new ChaosEmailNotifier() {
             @Override
             public String getSourceAddress(String to) {
                 return "source@chaosMonkey.foo";
@@ -256,6 +256,18 @@ public class TestChaosMonkeyContext extends TestMonkeyContext implements ChaosMo
             public void sendTerminationGlobalNotification(InstanceGroup group, String instance) {
                 globallyNotified++;
             }
+
+			@Override
+			public boolean isValidEmail(String email) {
+				// TODO Auto-generated method stub
+				return false;
+			}
+
+			@Override
+			public void sendEmail(String to, String subject, String body) {
+				// TODO Auto-generated method stub
+				
+			}
         };
     }
 

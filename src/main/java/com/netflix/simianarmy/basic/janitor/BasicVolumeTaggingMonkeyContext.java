@@ -27,7 +27,7 @@ import java.util.Collection;
 
 /** The basic context for the monkey that tags volumes with Janitor meta data.
  */
-public class BasicVolumeTaggingMonkeyContext extends BasicSimianArmyContext implements VolumeTaggingMonkey.Context {
+public class BasicVolumeTaggingMonkeyContext extends BasicSimianArmyContext implements VolumeTaggingMonkey.Context<AWSClient> {
 
     private final Collection<AWSClient> awsClients = Lists.newArrayList();
 

@@ -51,19 +51,22 @@ public class BasicMonkeyServer extends HttpServlet {
     public void addMonkeysToRun() {
         LOGGER.info("Adding Chaos Monkey.");
         RUNNER.replaceMonkey(this.chaosClass, this.chaosContextClass);
-        LOGGER.info("Adding Volume Tagging Monkey.");
-        RUNNER.replaceMonkey(VolumeTaggingMonkey.class, BasicVolumeTaggingMonkeyContext.class);
-        LOGGER.info("Adding Janitor Monkey.");
-        RUNNER.replaceMonkey(BasicJanitorMonkey.class, BasicJanitorMonkeyContext.class);
-        LOGGER.info("Adding Conformity Monkey.");
-        RUNNER.replaceMonkey(BasicConformityMonkey.class, BasicConformityMonkeyContext.class);
+        
+        LOGGER.info("Skipping the monkeys");
+        
+//        LOGGER.info("Adding Volume Tagging Monkey.");
+//        RUNNER.replaceMonkey(VolumeTaggingMonkey.class, BasicVolumeTaggingMonkeyContext.class);
+//        LOGGER.info("Adding Janitor Monkey.");
+//        RUNNER.replaceMonkey(BasicJanitorMonkey.class, BasicJanitorMonkeyContext.class);
+//        LOGGER.info("Adding Conformity Monkey.");
+//        RUNNER.replaceMonkey(BasicConformityMonkey.class, BasicConformityMonkeyContext.class);
     }
 
     /**
      * make the class of the client object configurable.
      */
     @SuppressWarnings("rawtypes")
-    private Class chaosContextClass = com.netflix.simianarmy.basic.BasicChaosMonkeyContext.class;
+    private Class chaosContextClass = com.netflix.simianarmy.softlayer.SoftLayerChaosMonkeyContext.class;
 
     /**
      * make the class of the chaos object configurable.

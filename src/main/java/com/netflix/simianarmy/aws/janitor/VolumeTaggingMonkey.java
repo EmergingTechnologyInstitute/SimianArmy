@@ -32,6 +32,7 @@ import com.amazonaws.services.ec2.model.Instance;
 import com.amazonaws.services.ec2.model.Tag;
 import com.amazonaws.services.ec2.model.Volume;
 import com.amazonaws.services.ec2.model.VolumeAttachment;
+import com.netflix.simianarmy.CloudClient;
 import com.netflix.simianarmy.Monkey;
 import com.netflix.simianarmy.MonkeyCalendar;
 import com.netflix.simianarmy.MonkeyConfiguration;
@@ -56,7 +57,7 @@ public class VolumeTaggingMonkey extends Monkey {
     /**
      * The Interface Context.
      */
-    public interface Context extends Monkey.Context {
+    public interface Context<T extends CloudClient> extends Monkey.Context<T> {
         /**
          * Configuration.
          *
@@ -70,7 +71,7 @@ public class VolumeTaggingMonkey extends Monkey {
          *
          * @return the collection of AWS clients
          */
-        Collection<AWSClient> awsClients();
+        Collection<T> awsClients();
     }
 
     private final MonkeyConfiguration config;
@@ -84,7 +85,7 @@ public class VolumeTaggingMonkey extends Monkey {
      * The constructor.
      * @param ctx the context
      */
-    public VolumeTaggingMonkey(Context ctx) {
+    public VolumeTaggingMonkey(Context<AWSClient> ctx) {
         super(ctx);
         this.config = ctx.configuration();
         this.awsClients = ctx.awsClients();

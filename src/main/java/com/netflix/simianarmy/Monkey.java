@@ -33,7 +33,7 @@ public abstract class Monkey {
     /**
      * The Interface Context.
      */
-    public interface Context {
+    public interface Context<T extends CloudClient> {
 
         /**
          * Scheduler.
@@ -54,7 +54,7 @@ public abstract class Monkey {
          *
          * @return the cloud client
          */
-        CloudClient cloudClient();
+        T cloudClient();
 
         /**
          * Recorder.
