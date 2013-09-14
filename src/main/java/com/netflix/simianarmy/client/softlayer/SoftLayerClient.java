@@ -22,10 +22,8 @@ import java.nio.charset.Charset;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 
 import org.apache.http.HttpResponse;
 import org.apache.http.auth.AuthScope;
@@ -36,7 +34,6 @@ import org.apache.http.impl.client.DefaultHttpClient;
 import org.jclouds.ContextBuilder;
 import org.jclouds.compute.ComputeService;
 import org.jclouds.compute.ComputeServiceContext;
-import org.jclouds.compute.domain.ComputeMetadata;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -76,7 +73,6 @@ public class SoftLayerClient implements CloudClient {
 		private String instanceId;
 		private String privateIpAddress;
 		private String publicIpAddress;
-		private String jcloudsProvder;
 		private String zone;
 
 		protected Instance(JSONObject object) {
@@ -227,7 +223,7 @@ public class SoftLayerClient implements CloudClient {
 		this.asgardServer=asgardServer;
 		this.asgardUserid=asgardUserid;
 		this.asgardPasswod=asgardPassword;
-		jcloudsProvider = "softlayer";
+		this.jcloudsProvider = "softlayer";
 	}
 
 	@Override
@@ -374,8 +370,10 @@ public class SoftLayerClient implements CloudClient {
 	@Override
 	public void terminateInstance(String instanceId) {
 		LOGGER.warn("terminating instance:" + instanceId);
+		LOGGER.warn("terminating instance:" + instanceId);
 		ComputeServiceContext context = ContextBuilder.newBuilder(jcloudsProvider).credentials(softlayer_userid, softlayer_secret).buildView(ComputeServiceContext.class);
 		ComputeService client = context.getComputeService();		
 		client.destroyNode(instanceId);
 	}
+
 }
