@@ -29,6 +29,7 @@ import org.apache.commons.lang.Validate;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.netflix.simianarmy.CloudClient;
 import com.netflix.simianarmy.FeatureNotEnabledException;
 import com.netflix.simianarmy.InstanceGroupNotFoundException;
 import com.netflix.simianarmy.MonkeyCalendar;
@@ -70,7 +71,7 @@ public class BasicChaosMonkey extends ChaosMonkey {
      * @param ctx
      *            the ctx
      */
-    public BasicChaosMonkey(ChaosMonkey.Context ctx) {
+    public BasicChaosMonkey(ChaosMonkey.Context<? extends CloudClient> ctx) {
         super(ctx);
 
         this.cfg = ctx.configuration();
