@@ -33,6 +33,10 @@ import org.apache.http.auth.UsernamePasswordCredentials;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.client.methods.HttpRequestBase;
 import org.apache.http.impl.client.DefaultHttpClient;
+import org.jclouds.ContextBuilder;
+import org.jclouds.compute.ComputeService;
+import org.jclouds.compute.ComputeServiceContext;
+import org.jclouds.compute.domain.ComputeMetadata;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -72,6 +76,7 @@ public class SoftLayerClient implements CloudClient {
 		private String instanceId;
 		private String privateIpAddress;
 		private String publicIpAddress;
+		private String jcloudsProvder;
 		private String zone;
 
 		protected Instance(JSONObject object) {
@@ -211,6 +216,8 @@ public class SoftLayerClient implements CloudClient {
 	private final String asgardUserid;
 	
 	private final String asgardPasswod;
+	
+	private final String jcloudsProvider;
 
 	public SoftLayerClient(String region, String softlayer_userid,
 			String softlayer_secret, String asgardServer, String asgardUserid, String asgardPassword) {
@@ -220,6 +227,7 @@ public class SoftLayerClient implements CloudClient {
 		this.asgardServer=asgardServer;
 		this.asgardUserid=asgardUserid;
 		this.asgardPasswod=asgardPassword;
+		jcloudsProvider = "softlayer";
 	}
 
 	@Override
@@ -366,46 +374,8 @@ public class SoftLayerClient implements CloudClient {
 	@Override
 	public void terminateInstance(String instanceId) {
 		LOGGER.warn("terminating instance:" + instanceId);
-
-		try {
-
-			String urlStr = "https://api.softlayer.com/rest/v3/SoftLayer_Virtual_Guest/findByIpAddress/"
-					+ instanceId + ".json?objectMask=billingItem";
-
-			HttpGet get = new HttpGet(urlStr);
-
-			JSONObject obj = getJSONObjectResponse(get);
-
-			if (obj != null) {
-				JSONObject billingItem = obj.getJSONObject("billingItem");
-				String billingItemId = billingItem.getString("id");
-
-				HttpGet cancelService = new HttpGet(
-						"https://api.softlayer.com/rest/v3/SoftLayer_Billing_Item/"
-								+ billingItemId + "/cancelService");
-
-				String string = getStringResponse(cancelService);
-
-				boolean result = Boolean.parseBoolean(string);
-
-				if (!result) {
-					LOGGER.warn("Failed to stop server " + instanceId
-							+ " result:" + result);
-					throw new TerminationRuntimeException(
-							"Failed to stop server " + instanceId + " result:"
-									+ result);
-				}
-			} else {
-				LOGGER.warn("Couldn't find server " + instanceId);
-				throw new TerminationRuntimeException("Couldn't find server "
-						+ instanceId);
-			}
-		} catch (Exception ex) {
-			LOGGER.warn("Problem terminating instance " + instanceId + " "
-					+ ex.toString());
-			throw new TerminationRuntimeException(ex);
-		}
-
+		ComputeServiceContext context = ContextBuilder.newBuilder(jcloudsProvider).credentials(softlayer_userid, softlayer_secret).buildView(ComputeServiceContext.class);
+		ComputeService client = context.getComputeService();		
+		client.destroyNode(instanceId);
 	}
-
 }
